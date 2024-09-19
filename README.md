@@ -3,7 +3,7 @@
 ## Authors: 
 
 Jack Strickland 
-
+Jesse Gunn Cheu
 
 ## Target Audience
 
