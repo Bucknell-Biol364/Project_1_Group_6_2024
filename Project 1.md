@@ -1,9 +1,11 @@
 # Project_1 R Tutorial
 
-## Authors: 
+## Authors: Debra,Jack,and Jesse 
 
-Jack Strickland 
-Jesse Gunn Cheu
+
+
+## Target Audience
+
 
 
 ## Instructions
