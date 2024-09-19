@@ -1,6 +1,6 @@
 # Project_1 R Tutorial
 
-## Authors
+## Authors: Debra,Jack,and Jesse 
 
 
 
