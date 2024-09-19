@@ -5,9 +5,6 @@
 Jack Strickland 
 Jesse Gunn Cheu
 
-## Target Audience
-
-
 
 ## Instructions
 
