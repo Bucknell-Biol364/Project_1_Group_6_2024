@@ -3,6 +3,7 @@
 ## Authors: 
 
 Jack Strickland 
+Deborah Gonkpah
 
 ## Target Audience
 
