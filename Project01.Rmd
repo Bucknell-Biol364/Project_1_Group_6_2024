@@ -49,6 +49,11 @@ RxP <- RxP |>
 
 `mutate` was able to take the data and change its type using `as.factor()`. Here we also used `factor()` and added `levels()` to the predation data. This will tell R that this data should be loaded in a specific order that being "C", then "NL", and then "L". This is less important now but will be helpful when it comes to graphing.
 
+When we view the data again using `str()`, we will see these changes.
+```{r}
+str(RxP)
+```
+
 Now lets say we only want to view the largest of the tadpoles, we could use
 `filter()` in order to do this
 ```{r}
