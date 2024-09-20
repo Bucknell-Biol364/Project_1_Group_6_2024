@@ -1,0 +1,77 @@
+---
+title: "Group Project 1"
+subtitle: "Biology 368/664 Bucknell University"
+output: pdf_document
+authors: Jesse Gunn Cheu
+date: 14 Sep 2024
+---
+
+```{r Load Libraries, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+if (!require("UsingR")) install.packages("UsingR"); library(UsingR)
+if (!require("cowplot")) install.packages("cowplot"); library(cowplot)
+if (!require("conflicted")) install.packages("conflicted"); library(conflicted) # For dealing with conflicts
+if (!require("tidyverse")) install.packages("tidyverse"); library(tidyverse) # For everything
+conflict_prefer_all("dplyr", quiet = TRUE)
+```
+
+## Load in data
+
+First we are going to load in our data using `read_csv()` which will turn a csv file into a dataframe. We will also `view()` this data.
+
+```{r, quiet = TRUE}
+RxP <- read_csv("RxP.csv")
+view(RxP)
+```
+
+## Manipulating data
+
+This dataset shows a lot of different variables but more often than not we may not care about all of these variables. In order to `select()` data, we will use this command.
+```{r}
+RxP <- RxP |> 
+  select(Hatch, Pred, Res, Mass.final, SVL.final) # Column names to be selected
+```
+
+When we view our RxP dataset now we will see that only the variables within `select()` are seen.
+
+Lets take a look at our data using the `str()` command which returns the structure of our dataframe.
+```{r}
+str(RxP)
+```
+
+Data has different classes or types of values. Numeric refering to numbers, Characters words, and factors as levels. Currently our Hatch, Pred, and Res columns are considered characters but for graphing we will want to make sure they are `factors`. To do this we will use `mutate()`.
+```{r}
+RxP <- RxP |> 
+  mutate(Hatch = as.factor(Hatch),
+         Res = as.factor(Res),
+         Pred = factor(Pred, levels = c("C", "NL", "L")))
+```
+
+`mutate` was able to take the data and change its type using `as.factor()`. Here we also used `factor()` and added `levels()` to the predation data. This will tell R that this data should be loaded in a specific order that being "C", then "NL", and then "L". This is less important now but will be helpful when it comes to graphing.
+
+Now lets say we only want to view the largest of the tadpoles, we could use
+`filter()` in order to do this
+```{r}
+BIG.RxP <- RxP |> 
+  filter(Mass.final > 0.3) # Will remove any tadpoles that were had a final mass < 0.3
+```
+
+If you look in your environment in the top left of your screen you should now see significantly less observations (abbreviated as obs.) meaning we have successfully filtered data.
+
+###############################################################
+CAN SOMEONE DO SOMETHING ABOUT NORMALLY DISTRIBUTED DATA HERE
+##############################################################
+
+Because we can see that our data is not normally distributed, we might want to add a column that fixes this. We will be using `mutate()` again but in a different way to do this.
+```{r}
+RxP <- RxP |> 
+  mutate(Log.mass = log10(Mass.final))
+```
+
+We have now created a new Log.mass column in or RxP dataframe. When we view this data with `simple.eda()` we will see that this data is a lot more normally distributed.
+
+```{r}
+simple.eda(RxP$Log.mass)
+```
+
+
