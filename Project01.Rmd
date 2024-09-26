@@ -73,7 +73,7 @@ RxP <- RxP |>
   mutate(Log.mass = log10(Mass.final))
 ```
 
-We have now created a new Log.mass column in or RxP dataframe. When we view this data with `simple.eda()` we will see that this data is a lot more normally distributed.
+We have now created a new Log.mass column in or RxP dataframe. When we view this data again with `simple.eda()` we will see that this data is a lot more normally distributed.
 
 ```{r}
 simple.eda(RxP$Log.mass)
