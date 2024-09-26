@@ -7,128 +7,74 @@ date: 14 Sep 2024
 ---
 
 ```{r Load Libraries, include=FALSE}
-# Load other packages here.
-if (!require("datasauRus")) install.packages("datasauRus"); library(datasauRus)
-if (!require("tidyverse")) install.packages("tidyverse"); library(tidyverse)
+knitr::opts_chunk$set(echo = TRUE)
+if (!require("UsingR")) install.packages("UsingR"); library(UsingR)
+if (!require("cowplot")) install.packages("cowplot"); library(cowplot)
+if (!require("conflicted")) install.packages("conflicted"); library(conflicted) # For dealing with conflicts
+if (!require("tidyverse")) install.packages("tidyverse"); library(tidyverse) # For everything
+conflict_prefer_all("dplyr", quiet = TRUE)
 ```
 
-This project will require you to develop a tutorial to teach Bucknell students how to use R for graphing and data analysis. 
+## Load in data
 
-## Introduction
+First we are going to load in our data using `read_csv()` which will turn a csv file into a dataframe. We will also `view()` this data.
 
-Begin by introducing yourself to your group. 
-Then discuss the biggest challenge that you have faced during the first three weeks of this course.
-Determine if there are any common threads in these challenges and start to think about objectives for the tutorial.
+```{r, quiet = TRUE}
+RxP <- read_csv("RxP.csv")
+view(RxP)
+```
 
-## Target Audience
+## Manipulating data
 
-Discuss with your group the target audience for the tutorial. 
-Examples could be a new student in Biology 364/664, a student in one of the new core Biology classes (201, 202, 203, or 204), a student in another 300-level Biology course (not 364), or a new student in one of the Bucknell research groups. 
+This dataset shows a lot of different variables but more often than not we may not care about all of these variables. In order to `select()` data, we will use this command.
+```{r}
+RxP <- RxP |> 
+  select(Hatch, Pred, Res, Mass.final, SVL.final) # Column names to be selected
+```
 
-Edit the README.md file in your group's repository to reflect your plan.
+When we view our RxP dataset now we will see that only the variables within `select()` are seen.
 
-## Objectives
+Lets take a look at our data using the `str()` command which returns the structure of our dataframe.
+```{r}
+str(RxP)
+```
 
-After deciding on the target audience for your tutorial determine 2 to 3 overall objectives for your tutorial (one per member of your group). 
-These should be high-level objectives that are important skills for your target audience.
-Check with Prof. Field to see if they are appropriate and then add them to your README.md file.
+Data has different classes or types of values. Numeric refering to numbers, Characters words, and factors as levels. Currently our Hatch, Pred, and Res columns are considered characters but for graphing we will want to make sure they are `factors`. To do this we will use `mutate()`.
+```{r}
+RxP <- RxP |> 
+  mutate(Hatch = as.factor(Hatch),
+         Res = as.factor(Res),
+         Pred = factor(Pred, levels = c("C", "NL", "L")))
+```
 
-Identify at least 2 goals within each objective and add them to your README.md file.
-These should be goals that someone who is working through the tutorial can self-asses.
-For example, "to demostrate that you can test a hypothesis using a statistical model, the student should use a T test, linear model, or other test and interpret the p value appropriately."
+`mutate` was able to take the data and change its type using `as.factor()`. Here we also used `factor()` and added `levels()` to the predation data. This will tell R that this data should be loaded in a specific order that being "C", then "NL", and then "L". This is less important now but will be helpful when it comes to graphing.
 
-## Grading
+When we view the data again using `str()`, we will see these changes.
+```{r}
+str(RxP)
+```
 
-Each group will be expected to complete the following tasks to earn 85% of the points available for this assignment (21/25).
+Now lets say we only want to view the largest of the tadpoles, we could use
+`filter()` in order to do this
+```{r}
+BIG.RxP <- RxP |> 
+  filter(Mass.final > 0.3) # Will remove any tadpoles that were had a final mass < 0.3
+```
 
-- Identify and obtain suitable dataset
-- Use a Github repository and version control to collaborate on the project
-  + Every member of the group should participate in editing the repo
-- Spend 4-6 hours preparing, coding, and testing tutorial
-  + Data exploration
-  + Data visualization
-  + Hypothesis testing
-- Present tutorial in class
-- Provide public archive suitable for sharing to students/faculty
+If you look in your environment in the top left of your screen you should now see significantly less observations (abbreviated as obs.) meaning we have successfully filtered data.
 
-Tutorials from previous classes can be viewed at our public github site: https://github.com/Bucknell-Biol364
+###############################################################
+CAN SOMEONE DO SOMETHING ABOUT NORMALLY DISTRIBUTED DATA HERE
+##############################################################
 
-Each group should use an *Acknowledgements* section to document the participation of each member and the collaboration within and between groups.
+Because we can see that our data is not normally distributed, we might want to add a column that fixes this. We will be using `mutate()` again but in a different way to do this.
+```{r}
+RxP <- RxP |> 
+  mutate(Log.mass = log10(Mass.final))
+```
 
-Additional credit will be awarded for providing assistance to other groups or for the development of a tutorial that goes beyond the minimal expectations listed above.
-You will have the opportunity to provide feedback to another group after the initial deadline (like for Homework 02).
-
-## Sample Dataset
-
-One of the possible datasets to use for the tutorial can be found in the datasauRus package.
+We have now created a new Log.mass column in or RxP dataframe. When we view this data again with `simple.eda()` we will see that this data is a lot more normally distributed.
 
 ```{r}
-datasaurus_dozen |> 
-  group_by(dataset) |> 
-  summarize(
-      mean_x    = mean(x),
-      mean_y    = mean(y),
-      std_dev_x = sd(x),
-      std_dev_y = sd(y),
-      corr_x_y  = cor(x, y)
-      )
+simple.eda(RxP$Log.mass)
 ```
-
-Compare the means and standard deviations of the 13 different datasets.
-
-
-Boxplots of either the x or the y value show that there are some differences, even though the means and standard deviations are identical.
-
-```{r}
-datasaurus_dozen |>
-  ggplot(aes(x = x, colour = dataset)) +
-    geom_boxplot() +
-    theme_void() +
-    theme(legend.position = "none") +
-    facet_wrap(~dataset, ncol = 3)
-```
-
-```{r}
-datasaurus_dozen |>
-  ggplot(aes(x = y, colour = dataset))+
-    geom_boxplot()+
-    theme_void()+
-    theme(legend.position = "none")+
-    facet_wrap(~dataset, ncol = 3)
-```
-
-But you have to visualize all of the data with a scatter plot to really see the patterns.
-
-```{r fig.height=12, fig.width=9}
-datasaurus_dozen |> 
-  ggplot(aes(x = x, y = y, colour = dataset))+
-    geom_point()+
-    theme_void()+
-    theme(legend.position = "none")+
-    facet_wrap(~dataset, ncol = 3)
-```
-
-And did you notice the code in the {r} codechunk header that controlled the size of the output in the Rmd? Pretty neat trick!
-
-And here are two versions of the data that you could use in your data visualization tutorial. 
-To use them you would probably want to change the names of the datasets and also make x and y more meaningful. 
-Then save them as a csv or tsv to be imported later for your tutorial. 
-
-```{r}
-datasaurus_long <- datasaurus_dozen
-datasaurus_wide <- datasaurus_dozen_wide
-head(datasaurus_long)
-head(datasaurus_wide)
-```
-
-# Acknowledgements
-
-DatasauRus package and description below: Stephanie Locke https://github.com/jumpingrivers/datasauRus
-
-The datasauRus package wraps the awesome Datasaurus Dozen dataset, which contains 13 sets of x-y data. Each sub-dataset has five statistics that are (almost) the same in each case. (These are the mean of x, mean of y, standard deviation of x, standard deviation of y, and Pearson correlation between x and y). However, scatter plots reveal that each sub-dataset looks very different. The dataset is intended to be used to teach students that it is important to plot their own datasets, rather than relying only on statistics.
-
-The Datasaurus was created by Alberto Cairo and described in the paper [Same Stats, Different Graphs: Generating Datasets with Varied Appearance and Identical Statistics through Simulated Annealing](https://www.autodeskresearch.com/publications/samestats) by Justin Matejka and George Fitzmaurice.
-
-In the paper, Justin and George simulate a variety of datasets that the same summary statistics to the Datasaurus but have very different distributions. 
-
-This package also makes these datasets available for use as an advanced [Anscombe's Quartet](https://en.wikipedia.org/wiki/Anscombe%27s_quartet), available in R as `anscombe`.
