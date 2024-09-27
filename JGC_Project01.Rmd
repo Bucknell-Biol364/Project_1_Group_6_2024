@@ -26,6 +26,17 @@ view(RxP)
 
 Its important to note that the `<-` operator is how we assign variables rather than an `=` that many other computing languages use. 
 
+**IMPORTANT VARIABLES IN THE DATA**
+Block - 
+Tank - 
+Hatch - 
+Pred - 
+Res - 
+Tail.initial
+Mass.final
+SVL.final - 
+
+
 ## Manipulating data
 
 This dataset shows a lot of different variables but more often than not we may not care about all of these variables. In order to `select()` data, we will use this command.
@@ -42,7 +53,6 @@ str(RxP)
 ```
 
 You may have also noticed an unfamiliar operator being used called a pipe ` |> `. Pipes are used in similar ways to parantheses and make code simpler to view. Here is an example of the same code using and not using pipes.
-
 ```{r}
 str(select(RxP, Hatch, Mass.final))
 
@@ -54,7 +64,7 @@ RxP |>
 Now you `Select()` the `Tank`, `Block`, and `Tail.initial` columns.
 ```{r}
 PRACTICE.RxP <- PRACTICE.RxP |> 
-  select(Tank)
+  select()
 
 str(PRACTICE.RxP)
 ```
@@ -76,7 +86,7 @@ When we view the data again using `str()`, we will see these changes.
 str(RxP)
 ```
 Practice using `factor()` and `mutate()` on a the `PRACTICE.RxP` dataset. Change the `Tank` and `Block` columns to factors.
-```{r}
+```{r, quiet = TRUE}
 PRACTICE.RxP <- PRACTICE.RxP |> 
   # YOUR CODE GOES HERE
 ```
@@ -112,12 +122,18 @@ FILTER2.RxP <- # CODE GOES HERE
 
 Wow!
 
-Lets do a quick check to see if some of our data is normally distributed using `simple.eda()`.
+Lets do a quick check to see if some of our data is normally distributed using `simple.eda()`. `simple.eda()` is an easy visualization tool that allows us to view distributions of `numeric` data.
 ```{r}
 simple.eda(RxP$Mass.final) # Show Mass Final
-simple.eda(RxP$SVL.final)
+simple.eda(RxP$SVL.final)  # Show SVL Final
 ```
 
+You try using `simple.eda()` with the `PRACTICE.RxP`.
+```{r}
+simple.eda() #Your code goes here
+```
+
+YIPPIE!
 
 Because we can see that our data is not normally distributed, we might want to add a column that fixes this. We will be using `mutate()` again but in a different way to do this.
 ```{r}
@@ -130,3 +146,4 @@ We have now created a new Log.mass column in or RxP dataframe. When we view this
 ```{r}
 simple.eda(RxP$Log.mass)
 ```
+
