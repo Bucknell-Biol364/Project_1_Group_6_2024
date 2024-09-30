@@ -42,7 +42,7 @@ emergence began (defined as Day 1)
 • SVL at completion of tail resorption
 • Mass at completion of tail resorption
 • Number of days needed for each metamorph to fully resorb the tail
-`Touchon, Justin C., 'Basic Statistical Analyses using R', Applied Statistics with R: A Practical Guide for the Life Sciences (Oxford, 2021; online edn, Oxford Academic, 19 Aug. 2021), https://doi.org/10.1093/oso/9780198869979.003.0005, accessed 30 Sept. 2024.`
+*Touchon, Justin C., 'Basic Statistical Analyses using R', Applied Statistics with R: A Practical Guide for the Life Sciences (Oxford, 2021; online edn, Oxford Academic, 19 Aug. 2021), https://doi.org/10.1093/oso/9780198869979.003.0005, accessed 30 Sept. 2024.*
 
 
 ### Data Wrangling
