@@ -26,15 +26,23 @@ view(RxP)
 
 Its important to note that the `<-` operator is how we assign variables rather than an `=` that many other computing languages use. 
 
-**IMPORTANT VARIABLES IN THE DATA**
-Block - 
-Tank - 
-Hatch - 
-Pred - 
-Res - 
-Tail.initial
-Mass.final
-SVL.final - 
+**IMPORTANT VARIABLES IN THE DATA** 
+`Predictor variables`
+• Hatching age: Early (4 days post-oviposition) or Late (6 days post-oviposition)
+• Predators: Control, Nonlethal (caged) dragonfly larvae, or Lethal (free-swimming)
+dragonfly larvae
+• Resources: Low (0.75 g) or High (1.5 g) food level, added every 5 days
+• Block where the metamorph was reared
+• Tank where the metamorph was reared
+`Response variables`
+• Age at hatching, both in terms of time since eggs were oviposited and time since
+emergence began (defined as Day 1)
+• Snout-vent (SVL) length at emergence
+• Tail length at emergence
+• SVL at completion of tail resorption
+• Mass at completion of tail resorption
+• Number of days needed for each metamorph to fully resorb the tail
+`Touchon, Justin C., 'Basic Statistical Analyses using R', Applied Statistics with R: A Practical Guide for the Life Sciences (Oxford, 2021; online edn, Oxford Academic, 19 Aug. 2021), https://doi.org/10.1093/oso/9780198869979.003.0005, accessed 30 Sept. 2024.`
 
 
 ## Manipulating data
@@ -76,10 +84,18 @@ Data has different classes or types of values. Numeric refering to numbers, Char
 RxP <- RxP |> 
   mutate(Hatch = as.factor(Hatch),
          Res = as.factor(Res),
-         Pred = factor(Pred, levels = c("C", "NL", "L"))) #NLISTSLIST
+         Pred = factor(Pred, levels = c("C", "NL", "L"))) 
 ```
 
 `mutate` was able to take the data and change its type using `as.factor()`. Here we also used `factor()` and added `levels()` to the predation data. This will tell R that this data should be loaded in a specific order that being "C", then "NL", and then "L". This is less important now but will be helpful when it comes to graphing.
+
+Something that is also important to not in this above code chunk is the list of levels. Lists are created with `c()`. This data holds multiple items which can be incredibily useful as you develop your R skills. Here is a quick example of some more advanced code.
+```{r}
+for (column in c("Mass.final", "SVL.initial", "SVL.final", "Tail.initial")) {
+  print(simple.eda(RxP[[column]]))
+}
+```
+
 
 When we view the data again using `str()`, we will see these changes.
 ```{r}
@@ -133,7 +149,7 @@ You try using `simple.eda()` with the `PRACTICE.RxP`.
 simple.eda() #Your code goes here
 ```
 
-YIPPIE!
+Amazing!
 
 Because we can see that our data is not normally distributed, we might want to add a column that fixes this. We will be using `mutate()` again but in a different way to do this.
 ```{r}
@@ -142,8 +158,13 @@ RxP <- RxP |>
 ```
 
 We have now created a new Log.mass column in or RxP dataframe. When we view this data with `simple.eda()` we will see that this data is a lot more normally distributed.
-
 ```{r}
 simple.eda(RxP$Log.mass)
 ```
 
+Lastly, you should take a look at `Tail.initial` data column using `simple.eda()` and determine if it is normally distributed. If you find that the data is not normally distributed, then you should create a new column using `mutate()` that finds the `log10()` of the data.
+```{r}
+#YOUR CODE GOES HERE
+```
+
+YIPPIE!
