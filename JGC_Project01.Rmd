@@ -8,7 +8,7 @@ date: 14 Sep 2024
 
 ```{r Load Libraries, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-if (!require("UsingR")) install.packages("UsingR"); library(UsingR)
+if (!require("UsingR")) install.packages("UsingR"); library(UsingR) # For simple.eda
 if (!require("cowplot")) install.packages("cowplot"); library(cowplot)
 if (!require("conflicted")) install.packages("conflicted"); library(conflicted) # For dealing with conflicts
 if (!require("tidyverse")) install.packages("tidyverse"); library(tidyverse) # For everything
