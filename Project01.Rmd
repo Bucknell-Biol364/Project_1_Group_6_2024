@@ -15,7 +15,7 @@ if (!require("tidyverse")) install.packages("tidyverse"); library(tidyverse) # F
 conflict_prefer_all("dplyr", quiet = TRUE)
 ```
 
-## Load in data
+### Load in data
 
 First we are going to load in our data using `read_csv()` which will turn a csv file into a dataframe. We will also `view()` this data.
 ```{r, quiet = TRUE}
@@ -45,7 +45,7 @@ emergence began (defined as Day 1)
 `Touchon, Justin C., 'Basic Statistical Analyses using R', Applied Statistics with R: A Practical Guide for the Life Sciences (Oxford, 2021; online edn, Oxford Academic, 19 Aug. 2021), https://doi.org/10.1093/oso/9780198869979.003.0005, accessed 30 Sept. 2024.`
 
 
-## Manipulating data
+### Data Wrangling
 
 This dataset shows a lot of different variables but more often than not we may not care about all of these variables. In order to `select()` data, we will use this command.
 ```{r}
@@ -168,3 +168,5 @@ Lastly, you should take a look at `Tail.initial` data column using `simple.eda()
 ```
 
 YIPPIE!
+
+### VISUALIZATION
