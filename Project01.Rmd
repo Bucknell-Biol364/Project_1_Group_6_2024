@@ -2,7 +2,7 @@
 title: "Group Project 1"
 subtitle: "Biology 368/664 Bucknell University"
 output: pdf_document
-authors: Prof. Ken Field
+authors: Deborah Gonkpah, Jesse Gunn Cheu, Jack Strickland 
 date: 14 Sep 2024
 ---
 
@@ -14,10 +14,10 @@ if (!require("conflicted")) install.packages("conflicted"); library(conflicted) 
 if (!require("tidyverse")) install.packages("tidyverse"); library(tidyverse) # For everything
 conflict_prefer_all("dplyr", quiet = TRUE)
 ```
+##OBJECTIVE
 
 ## Load in data
-
-First we are going to load in our data using `read_csv()` which will turn a csv file into a dataframe. We will also `view()` this data.
+First we are going to load in our data using `read_csv()` which will turn a csv file into a dataframe.This code helps load the data for exploration and analyzing. We will also `view()` this data.
 
 ```{r, quiet = TRUE}
 RxP <- read_csv("RxP.csv")
@@ -32,14 +32,18 @@ RxP <- RxP |>
   select(Hatch, Pred, Res, Mass.final, SVL.final) # Column names to be selected
 ```
 
-When we view our RxP dataset now we will see that only the variables within `select()` are seen.
+When we view our RxP data set now, we will see that only the variables within `select()` are seen.
 
-Lets take a look at our data using the `str()` command which returns the structure of our dataframe.
+Lets take a look at our data using the `str()` command which returns the structure of our data frame. 
+
+Note chr means character and num means numeric.
 ```{r}
 str(RxP)
 ```
 
-Data has different classes or types of values. Numeric refering to numbers, Characters words, and factors as levels. Currently our Hatch, Pred, and Res columns are considered characters but for graphing we will want to make sure they are `factors`. To do this we will use `mutate()`.
+Data has different classes or types of values. Numeric refering to numbers, Characters words, and factors as levels. Currently our Hatch, Pred, and Res columns are considered characters but for graphing we will want to make sure they are `factors`. To do this we will use `mutate()`. 
+
+`mutate` was able to take the data and change its type using `as.factor()`. Here we also used `factor()` and added `levels()` to the predation data. This will tell R that this data should be loaded in a specific order that being "C", then "NL", and then "L". This is less important now but will be helpful when it comes to graphing.
 ```{r}
 RxP <- RxP |> 
   mutate(Hatch = as.factor(Hatch),
@@ -47,9 +51,7 @@ RxP <- RxP |>
          Pred = factor(Pred, levels = c("C", "NL", "L")))
 ```
 
-`mutate` was able to take the data and change its type using `as.factor()`. Here we also used `factor()` and added `levels()` to the predation data. This will tell R that this data should be loaded in a specific order that being "C", then "NL", and then "L". This is less important now but will be helpful when it comes to graphing.
-
-When we view the data again using `str()`, we will see these changes.
+When we view the data again using `str()`, we will see these changes, that is instead of just 26 variables, we see the 5 variables we are going to be using for our exploration. Also, this code this time tells you if the variable is a factor or numerical, which is very important for this data set. 
 ```{r}
 str(RxP)
 ```
@@ -63,18 +65,57 @@ BIG.RxP <- RxP |>
 
 If you look in your environment in the top left of your screen you should now see significantly less observations (abbreviated as obs.) meaning we have successfully filtered data.
 
-###############################################################
-CAN SOMEONE DO SOMETHING ABOUT NORMALLY DISTRIBUTED DATA HERE
-##############################################################
+Shapiro-Wilk normality test. The normality test shows that final mass is not normally distributed.
 
-Because we can see that our data is not normally distributed, we might want to add a column that fixes this. We will be using `mutate()` again but in a different way to do this.
+Also the dollar sign is very important in the Shapiro-Wilk normality test. Always assign dollar sign to the variable you will be running a test on.
+```{r}
+shapiro.test(RxP$Mass.final)
+```
+
+These are the diagnostic plots below to check if things look okay or really out of whack. From these plots we can see that things do not look okay. The Q-Q Plot, boxplot, and histogram show a skewed data because the data may not be normally distributed. For example, the Q-Q Plot outliers at the far ends deviate from the diagonal line meaning there could be more extreme values than expected, hence, violating the model assumption.
+```{r}
+simple.eda(RxP$Mass.final)
+```
+
+Because we can see that our data is not normally distributed, we might want to add a column that fixes this. We will be using `mutate()` again but in a log transformation way to do this.
 ```{r}
 RxP <- RxP |> 
   mutate(Log.mass = log10(Mass.final))
 ```
 
-We have now created a new Log.mass column in or RxP dataframe. When we view this data with `simple.eda()` we will see that this data is a lot more normally distributed.
+We have now created a new Log.mass column in or RxP data frame. When we view this data with `simple.eda()` we will see that this data is a lot more normally distributed. log transformation helps the data to be more normally distributed. 
 
 ```{r}
 simple.eda(RxP$Log.mass)
+```
+
+
+##Data Visualization
+Data visualization is where we visually graph our data and gives more clarity to readers or viewers. So for this project we are going to graph three of the most common graphs in R studio, a bar graph, box plot, and linear graph. Now lets begin graphing our data.
+
+The code below graph for bar graph. For bar graph, you have to use a factor and a numerical variable for better graph.This simply explains that hatching age is dependent on final mass.
+```{r}
+ggplot(RxP, aes(x = Hatch, y = Mass.final)) +
+  geom_bar(stat = "identity") +
+  labs(title = "Hatching age and Final Mass", x = "Hatching age", y = "Final Mass") +
+  theme_cowplot()
+```
+
+
+The code below graph for box plot. For box plot, you also have to use a factor and a numerical variable for better graph. However, in this graph we compare three variable. hatching age and predation are dependent on final mass.
+```{r}
+ggplot(RxP, aes(x = Hatch, y = Mass.final, fill = Pred)) +
+  geom_boxplot() +
+  labs(title = "Hatching age and Final Mass", x = "Hatching age", y = "Final Mass") +
+  theme_cowplot()
+```
+
+The code below graph for linear graph. For linear graph, you have to use two numerical variables for better graph. So we will use SVL.final and final mass. Linear graph helps show the relationship between variables. After our linear graph model, we then do our statistical test to explain our data.
+
+```{r linear graph}
+ggplot(RxP, aes(x = SVL.final, y = Mass.final)) +
+  geom_point(alpha = 0.3) +
+  geom_smooth(method = "lm") +
+  labs(title = "SVL.final and Final Mass", x = "SVL.final", y = "Final Mass") +
+  theme_cowplot()
 ```
