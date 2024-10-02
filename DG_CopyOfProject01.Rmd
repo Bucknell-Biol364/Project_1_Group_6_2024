@@ -132,3 +132,153 @@ The Datasaurus was created by Alberto Cairo and described in the paper [Same Sta
 In the paper, Justin and George simulate a variety of datasets that the same summary statistics to the Datasaurus but have very different distributions. 
 
 This package also makes these datasets available for use as an advanced [Anscombe's Quartet](https://en.wikipedia.org/wiki/Anscombe%27s_quartet), available in R as `anscombe`.
+
+Data Exploration
+Targeted audience: Students that have completed at least one elementary or basic course in R studio.
+
+
+## Load in data
+First we are going to load in our data using `read_csv()` which will turn a csv file into a dataframe.This code helps load the data for exploration and analyzing. We will also `view()` this data.
+
+```{r, quiet = TRUE}
+RxP <- read_csv("RxP.csv")
+view(RxP)
+```
+
+## Manipulating data
+
+This data set shows a lot of different variables but often we may not care about all of these variables. In order to `select()` data, we will use this command.
+```{r}
+RxP <- RxP |> 
+  select(Hatch, Pred, Res, Mass.final, SVL.final) # Column names to be selected
+```
+
+When we view our RxP dataset now we will see that only the variables within `select()` are seen.
+
+Lets take a look at our data using the `str()` command which returns the structure of our dataframe.
+```{r}
+str(RxP)
+```
+
+Data has different classes or types of values. Numeric refering to numbers, Characters words, and factors as levels. Currently our Hatch, Pred, and Res columns are considered characters but for graphing we will want to make sure they are `factors`. To do this we will use `mutate()`.
+```{r}
+RxP <- RxP |> 
+  mutate(Hatch = as.factor(Hatch),
+         Res = as.factor(Res),
+         Pred = factor(Pred, levels = c("C", "NL", "L")))
+```
+
+`mutate` was able to take the data and change its type using `as.factor()`. Here we also used `factor()` and added `levels()` to the predation data. This will tell R that this data should be loaded in a specific order that being "C", then "NL", and then "L". This is less important now but will be helpful when it comes to graphing.
+
+When we view the data again using `str()`, we will see these changes.
+```{r}
+str(RxP)
+```
+
+Now lets say we only want to view the largest of the tadpoles, we could use
+`filter()` in order to do this
+```{r}
+BIG.RxP <- RxP |> 
+  filter(Mass.final > 0.3) # Will remove any tadpoles that were had a final mass < 0.3
+```
+
+If you look in your environment in the top left of your screen you should now see significantly less observations (abbreviated as obs.) meaning we have successfully filtered data.
+
+###############################################################
+CAN SOMEONE DO SOMETHING ABOUT NORMALLY DISTRIBUTED DATA HERE
+##############################################################
+
+Because we can see that our data is not normally distributed, we might want to add a column that fixes this. We will be using `mutate()` again but in a different way to do this.
+```{r}
+RxP <- RxP |> 
+  mutate(Log.mass = log10(Mass.final))
+```
+
+We have now created a new Log.mass column in or RxP dataframe. When we view this data with `simple.eda()` we will see that this data is a lot more normally distributed.
+
+```{r}
+simple.eda(RxP$Log.mass)
+```
+
+```{r}
+str(RxP)
+```
+
+
+##Data Visualization
+Data visualization is where we visually graph our data and gives more clarity to readers or viewers. So for this project we are going to graph three of the most common graphs in R studio, a bar graph, box plot, and linear graph. Now lets begin graphing our data.
+
+The code below graph for bar graph. For bar graph, you have to use a factor and a numerical variable for better graph.This simply explains that hatching age is dependent on final mass.
+```{r}
+ggplot(RxP, aes(x = Hatch, y = Mass.final)) +
+  geom_bar(stat = "identity") +
+  labs(title = "Hatching age and Final Mass", x = "Hatching age", y = "Final Mass") +
+  theme_cowplot()
+```
+
+Now it is your turn
+start by calling the function ggplot. Replace the variables in the parenthesis to your data set
+```{r}
+ggplot(Data Set, aes(x = independent variable, y = dependent variable)) +
+  geom_bar(stat = "identity") +
+  labs(title = "what ever name you want to call your graph", x = "independent variable", y = "dependent variable") +
+theme_cowplot()
+```
+##yayy you are done now.
+
+
+The code below graph for box plot. For box plot, you also have to use a factor and a numerical variable for better graph. However, in this graph we compare three variable. hatching age and predation are dependent on final mass.
+```{r}
+ggplot(RxP, aes(x = Hatch, y = Mass.final)) +
+  geom_boxplot() +
+  labs(title = "Hatching age and Final Mass", x = "Hatching age", y = "Final Mass") +
+  theme_cowplot()
+```
+
+Now let's practice!
+start by calling the function ggplot.Replace the variables in the parenthesis to your data set.This time you are going to use a geom_boxplot function instead of geom_bar.
+```{r}
+ggplot(Data Set, aes(x = independent variable, y = dependent variable)) +
+  geom_boxplot(stat = "identity") +
+  labs(title = "what ever name you want to call your graph", x = "independent variable", y = "dependent variable") +
+theme_cowplot()
+```
+##How are you feeling so far? We are about to something even cooler than our two graphs.
+
+The code below graph for linear graph. For linear graph, you have to use two numerical variables for better graph. So we will use SVL.final and final mass. Linear graph helps show the relationship between variables. After our linear graph model, we then do our statistical test to explain our data.
+
+```{r}
+ggplot(RxP, aes(x = Hatch, y = Mass.final, fill = Pred)) +
+  geom_boxplot() +
+  labs(title = "Hatching age and Final Mass", x = "Hatching age", y = "Final Mass") +
+  theme_cowplot()
+```
+
+Are you excited to compare more than two variables? Okay, great. The code you are about to use compares three variables all together and gives you a beautiful colorful graph. This time we will use fill to add our third varaible. Note this is a factor and not a numerical variable
+
+```{r}
+ggplot(Data Set, aes(x = independent variable, y = dependent variable, fill = Pred)) +
+  geom_boxplot() +
+  labs(title = "what ever name you want to call your graph", x = "independent variable", y = "dependent variable") +
+theme_cowplot()
+```
+
+
+```{r linear graph}
+ggplot(RxP, aes(x = SVL.final, y = Mass.final)) +
+  geom_point(alpha = 0.3) +
+  geom_smooth(method = "lm") +
+  labs(title = "SVL.final and Final Mass", x = "SVL.final", y = "Final Mass") +
+  theme_cowplot()
+```
+
+Let's code for our last graph, which is linear graph.Call the ggplot function again and then use geom_point to construct a linear graph. However, for linear graph, you use numerical values only.alpha helps you to increase the visibility of the points along the line. You can play around that to see for yourself.
+```{r}
+ggplot(Data set, aes(x = numerical value 1, y = numerical value 2)) +
+  geom_point(alpha = 0.3) + 
+  geom_smooth(method = "lm") +
+  labs(title = "SVL.final and Final Mass", x = "SVL.final", y = "Final Mass") +
+  theme_cowplot()
+```
+##Yayyy, Now we are done with data visualization. We can finally run our statistical test.
+
