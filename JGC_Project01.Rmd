@@ -8,7 +8,7 @@ date: 14 Sep 2024
 
 ```{r Load Libraries, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-if (!require("UsingR")) install.packages("UsingR"); library(UsingR)
+if (!require("UsingR")) install.packages("UsingR"); library(UsingR) # For simple.eda
 if (!require("cowplot")) install.packages("cowplot"); library(cowplot)
 if (!require("conflicted")) install.packages("conflicted"); library(conflicted) # For dealing with conflicts
 if (!require("tidyverse")) install.packages("tidyverse"); library(tidyverse) # For everything
@@ -20,10 +20,30 @@ conflict_prefer_all("dplyr", quiet = TRUE)
 First we are going to load in our data using `read_csv()` which will turn a csv file into a dataframe. We will also `view()` this data.
 ```{r, quiet = TRUE}
 RxP <- read_csv("RxP.csv") #loads in data as RxP
+PRACTICE.RxP <- read_csv("RxP.csv") #loads in data as RxP
 view(RxP)
 ```
 
 Its important to note that the `<-` operator is how we assign variables rather than an `=` that many other computing languages use. 
+
+**IMPORTANT VARIABLES IN THE DATA** 
+`Predictor variables`
+• Hatching age: Early (4 days post-oviposition) or Late (6 days post-oviposition)
+• Predators: Control, Nonlethal (caged) dragonfly larvae, or Lethal (free-swimming)
+dragonfly larvae
+• Resources: Low (0.75 g) or High (1.5 g) food level, added every 5 days
+• Block where the metamorph was reared
+• Tank where the metamorph was reared
+`Response variables`
+• Age at hatching, both in terms of time since eggs were oviposited and time since
+emergence began (defined as Day 1)
+• Snout-vent (SVL) length at emergence
+• Tail length at emergence
+• SVL at completion of tail resorption
+• Mass at completion of tail resorption
+• Number of days needed for each metamorph to fully resorb the tail
+`Touchon, Justin C., 'Basic Statistical Analyses using R', Applied Statistics with R: A Practical Guide for the Life Sciences (Oxford, 2021; online edn, Oxford Academic, 19 Aug. 2021), https://doi.org/10.1093/oso/9780198869979.003.0005, accessed 30 Sept. 2024.`
+
 
 ## Manipulating data
 
@@ -41,7 +61,6 @@ str(RxP)
 ```
 
 You may have also noticed an unfamiliar operator being used called a pipe ` |> `. Pipes are used in similar ways to parantheses and make code simpler to view. Here is an example of the same code using and not using pipes.
-
 ```{r}
 str(select(RxP, Hatch, Mass.final))
 
@@ -50,21 +69,45 @@ RxP |>
   str()
 ```
 
+Now you `Select()` the `Tank`, `Block`, and `Tail.initial` columns.
+```{r}
+PRACTICE.RxP <- PRACTICE.RxP |> 
+  select()
+
+str(PRACTICE.RxP)
+```
+
+Good Job!
 
 Data has different classes or types of values. Numeric refering to numbers, Characters words, and factors as levels. Currently our Hatch, Pred, and Res columns are considered characters but for graphing we will want to make sure they are `factors`. To do this we will use `mutate()`.
 ```{r}
 RxP <- RxP |> 
   mutate(Hatch = as.factor(Hatch),
          Res = as.factor(Res),
-         Pred = factor(Pred, levels = c("C", "NL", "L")))
+         Pred = factor(Pred, levels = c("C", "NL", "L"))) 
 ```
 
 `mutate` was able to take the data and change its type using `as.factor()`. Here we also used `factor()` and added `levels()` to the predation data. This will tell R that this data should be loaded in a specific order that being "C", then "NL", and then "L". This is less important now but will be helpful when it comes to graphing.
+
+Something that is also important to not in this above code chunk is the list of levels. Lists are created with `c()`. This data holds multiple items which can be incredibily useful as you develop your R skills. Here is a quick example of some more advanced code.
+```{r}
+for (column in c("Mass.final", "SVL.initial", "SVL.final", "Tail.initial")) {
+  print(simple.eda(RxP[[column]]))
+}
+```
+
 
 When we view the data again using `str()`, we will see these changes.
 ```{r}
 str(RxP)
 ```
+Practice using `factor()` and `mutate()` on a the `PRACTICE.RxP` dataset. Change the `Tank` and `Block` columns to factors.
+```{r, quiet = TRUE}
+PRACTICE.RxP <- PRACTICE.RxP |> 
+  # YOUR CODE GOES HERE
+```
+
+Nice!
 
 Now lets say we only want to view the largest of the tadpoles, we could use
 `filter()` in order to do this
@@ -75,9 +118,38 @@ BIG.RxP <- RxP |>
 
 If you look in your environment in the top left of your screen you should now see significantly less observations (abbreviated as obs.) meaning we have successfully filtered data.
 
-###############################################################
-CAN SOMEONE DO SOMETHING ABOUT NORMALLY DISTRIBUTED DATA HERE
-##############################################################
+We can also do this with factors by determining if the factor meets certain specifications using comparison operators such as `==`.
+```{r}
+HIGH.RxP <- RxP |> 
+  filter(Res == "Hi") # Will only include data that was in the high resource treatment groups
+```
+
+We can also do both of these filters at the same time.
+```{r}
+FILTER.RxP <- RxP |> 
+  filter(Mass.final > 0.3,
+         Res == "Hi")
+```
+
+Now its your turn, use `filter()` to select data that was in the `Control (C)` treatment group and had a `Final mass (final.mass)` less than 0.5.
+```{r}
+FILTER2.RxP <- # CODE GOES HERE
+```
+
+Wow!
+
+Lets do a quick check to see if some of our data is normally distributed using `simple.eda()`. `simple.eda()` is an easy visualization tool that allows us to view distributions of `numeric` data.
+```{r}
+simple.eda(RxP$Mass.final) # Show Mass Final
+simple.eda(RxP$SVL.final)  # Show SVL Final
+```
+
+You try using `simple.eda()` with the `PRACTICE.RxP`.
+```{r}
+simple.eda() #Your code goes here
+```
+
+Amazing!
 
 Because we can see that our data is not normally distributed, we might want to add a column that fixes this. We will be using `mutate()` again but in a different way to do this.
 ```{r}
@@ -86,7 +158,13 @@ RxP <- RxP |>
 ```
 
 We have now created a new Log.mass column in or RxP dataframe. When we view this data with `simple.eda()` we will see that this data is a lot more normally distributed.
-
 ```{r}
 simple.eda(RxP$Log.mass)
 ```
+
+Lastly, you should take a look at `Tail.initial` data column using `simple.eda()` and determine if it is normally distributed. If you find that the data is not normally distributed, then you should create a new column using `mutate()` that finds the `log10()` of the data.
+```{r}
+#YOUR CODE GOES HERE
+```
+
+YIPPIE!
