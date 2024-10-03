@@ -101,8 +101,37 @@ ggplot(RxP, aes(x = Hatch, y = Mass.final)) +
   theme_cowplot()
 ```
 
+Now it is your turn
+start by calling the function ggplot. Replace the variables in the parenthesis to your data set
+```{r}
+ggplot(Data Set, aes(x = independent variable, y = dependent variable)) +
+  geom_bar(stat = "identity") +
+  labs(title = "what ever name you want to call your graph", x = "independent variable", y = "dependent variable") +
+theme_cowplot()
+```
+##yayy you are done now.
+
 
 The code below graph for box plot. For box plot, you also have to use a factor and a numerical variable for better graph. However, in this graph we compare three variable. hatching age and predation are dependent on final mass.
+```{r}
+ggplot(RxP, aes(x = Hatch, y = Mass.final)) +
+  geom_boxplot() +
+  labs(title = "Hatching age and Final Mass", x = "Hatching age", y = "Final Mass") +
+  theme_cowplot()
+```
+
+Now let's practice!
+start by calling the function ggplot.Replace the variables in the parenthesis to your data set.This time you are going to use a geom_boxplot function instead of geom_bar.
+```{r}
+ggplot(Data Set, aes(x = independent variable, y = dependent variable)) +
+  geom_boxplot(stat = "identity") +
+  labs(title = "what ever name you want to call your graph", x = "independent variable", y = "dependent variable") +
+theme_cowplot()
+```
+##How are you feeling so far? We are about to something even cooler than our two graphs.
+
+The code below graph for linear graph. For linear graph, you have to use two numerical variables for better graph. So we will use SVL.final and final mass. Linear graph helps show the relationship between variables. After our linear graph model, we then do our statistical test to explain our data.
+
 ```{r}
 ggplot(RxP, aes(x = Hatch, y = Mass.final, fill = Pred)) +
   geom_boxplot() +
@@ -110,7 +139,15 @@ ggplot(RxP, aes(x = Hatch, y = Mass.final, fill = Pred)) +
   theme_cowplot()
 ```
 
-The code below graph for linear graph. For linear graph, you have to use two numerical variables for better graph. So we will use SVL.final and final mass. Linear graph helps show the relationship between variables. After our linear graph model, we then do our statistical test to explain our data.
+Are you excited to compare more than two variables? Okay, great. The code you are about to use compares three variables all together and gives you a beautiful colorful graph. This time we will use fill to add our third varaible. Note this is a factor and not a numerical variable
+
+```{r}
+ggplot(Data Set, aes(x = independent variable, y = dependent variable, fill = Pred)) +
+  geom_boxplot() +
+  labs(title = "what ever name you want to call your graph", x = "independent variable", y = "dependent variable") +
+theme_cowplot()
+```
+
 
 ```{r linear graph}
 ggplot(RxP, aes(x = SVL.final, y = Mass.final)) +
@@ -119,3 +156,89 @@ ggplot(RxP, aes(x = SVL.final, y = Mass.final)) +
   labs(title = "SVL.final and Final Mass", x = "SVL.final", y = "Final Mass") +
   theme_cowplot()
 ```
+
+Let's code for our last graph, which is linear graph.Call the ggplot function again and then use geom_point to construct a linear graph. However, for linear graph, you use numerical values only.alpha helps you to increase the visibility of the points along the line. You can play around that to see for yourself.
+```{r}
+ggplot(Data set, aes(x = numerical value 1, y = numerical value 2)) +
+  geom_point(alpha = 0.3) + 
+  geom_smooth(method = "lm") +
+  labs(title = "SVL.final and Final Mass", x = "SVL.final", y = "Final Mass") +
+  theme_cowplot()
+```
+##Yayyy, Now we are done with data visualization. We can finally run our statistical test.
+
+##Statistical Tests
+We will now begin our statistical test
+
+We need to test our assumptions in order to run a linear model. Because of this, I will always plot the model after we have created it so we can use the plots to ensure the assumptions are met.
+
+First we are going to run a linear model on our two numeric variables (SVL.final and `Mass.final). What this does is tell us if a change in the independent variable can predict a change in the dependent variable.
+
+We will use the `lm()` function to do this. We put the dependent variable first, then the independent. Afterwards we tell R the data to use. Finally we ask it to show us the results with the `summary()` command. We will also plot the data.
+
+```{r}
+SVLtoMassLM <- lm(Mass.final ~ SVL.final, data = RxP)
+summary(SVLtoMassLM)
+anova(SVLtoMassLM)
+plot(SVLtoMassLM)
+```
+
+
+We got a p-value of 2.2e-16, which means that there is an extremely strong positive and significant correlation between SVL.final and Mass.final. Notice how both the `lm()` function and the `anova()` function gave the same p value. This is because the data fits the assumptions for both. 
+
+You can see in the plots that this data is not perfectly normal. Remember earlier when we transformed the Mass data using the log function? Now is the time to use it. Use the `Log.mass` variable instead of `Mass.final`
+
+##Now you try
+using the code above as an example, and the scaffolding I have created, create your own linear model with the two numeric variables `Log.mass` and `SVL.Final`.
+```{r}
+testmodel1 <- lm(DEPENDENT.VARIABLE ~ IDEPENDENT.VARIABLE, data = DATA)
+summary(testmodel1)
+plot(testmodel1)
+```
+
+
+
+Now we will do a linear model on a categorical variable and a numeric one. Remember earlier when we changed the three categorical variables from characters to factors? We are now testing to see whether or not the hatching age affects the final mass of the tadpoles. We will use the exact same syntax as before, replacing the independent variable from before with the new `Hatch` variable
+
+```{r}
+HatchtoMassLM <- lm(Mass.final ~ Hatch, data = RxP)
+summary(HatchtoMassLM)
+plot(HatchtoMassLM)
+```
+
+Why do our plots look like this? Well to start, lets think about what we changed. We swapped out the numeric variable `SVL.final` for the factor `Hatch`. If you remember what happened when we did `str()`, the data for `Hatch` can only be either E or L. This is why we see two distinct lines in our plots.
+
+
+The p-value is .1232, which means that at the standard significance level of .05, these results are not significant for this relationship. Our R-squared value is also very small, which furthers that `Hatch` is not a good predictor of `Mass.final`.
+
+
+##Second attempt
+Your turn now! I have reduced the template to make it slightly more difficult. Create your own second linear model using a variable we converted to a factor and our more normal `Log.mass` numeric variable.
+```{r}
+testmodel2 <- lm( ~ , data = )
+summary()
+plot()
+```
+
+
+
+Now we are going to look at a more complex linear model. What happens if we ask the question how `SVL.final` and `Hatch` predict `Mass.final` together? This following test will tell us if each variable has an effect on Mass.final individually, as well as if the effect gets stronger when controlling for the other variable.
+
+
+In order to code two variables as the independant variable, we will use a + sign. This is simple and makes sense, as R understands we want to use both `SVL.final` + `Hatch`
+```{r}
+SVLandHatchtoMassLM <- lm(Mass.final ~ SVL.final + Hatch, data = RxP)
+summary(SVLandHatchtoMassLM)
+plot(SVLandHatchtoMassLM)
+```
+
+These residuals are similar to our lm with only `SVL.final`. This suggests that this model is still somewhat accurate in terms of its ability to predict `Mass.final`. The R-squared is higher than the previously mentioned model, meaning that these two variables together are better predictors of Mass.final.
+
+In spite of all this, the plots show the assumptions are not quite met as the data is not exactly normal. You know how to fix this by now.
+
+##Your final test
+Now is your turn again! Create your own linear model based on how the two variables affect the adjusted `Log.mass` variable. No scaffolding this time. Feel free to reference your code above or the example code above if you get stuck
+```{r}
+
+```
+
