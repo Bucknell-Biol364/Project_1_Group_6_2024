@@ -1,0 +1,308 @@
+---
+title: "Group Project 1"
+subtitle: "Biology 368/664 Bucknell University"
+output: pdf_document
+authors: Deborah Gonkpah, Jesse Gunn Cheu, Jack Strickland 
+date: 14 Sep 2024
+---
+
+```{r Load Libraries, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+if (!require("UsingR")) install.packages("UsingR"); library(UsingR)
+if (!require("cowplot")) install.packages("cowplot"); library(cowplot)
+if (!require("conflicted")) install.packages("conflicted"); library(conflicted) # For dealing with conflicts
+if (!require("tidyverse")) install.packages("tidyverse"); library(tidyverse) # For everything
+conflict_prefer_all("dplyr", quiet = TRUE)
+<<<<<<< HEAD
+```
+
+## Load in data
+
+First we are going to load in our data using `read_csv()` which will turn a csv file into a dataframe. We will also `view()` this data.
+
+```{r, quiet = TRUE}
+RxP <- read_csv("RxP.csv")
+view(RxP)
+```
+
+## Manipulating data
+
+This dataset shows a lot of different variables but more often than not we may not care about all of these variables. In order to `select()` data, we will use this command.
+```{r}
+RxP <- RxP |> 
+  select(Hatch, Pred, Res, Mass.final, SVL.final) # Column names to be selected
+```
+
+When we view our RxP dataset now we will see that only the variables within `select()` are seen.
+
+Lets take a look at our data using the `str()` command which returns the structure of our dataframe.
+```{r}
+str(RxP)
+```
+
+Data has different classes or types of values. Numeric refering to numbers, Characters words, and factors as levels. Currently our Hatch, Pred, and Res columns are considered characters but for graphing we will want to make sure they are `factors`. To do this we will use `mutate()`.
+```{r}
+RxP <- RxP |> 
+  mutate(Hatch = as.factor(Hatch),
+         Res = as.factor(Res),
+         Pred = factor(Pred, levels = c("C", "NL", "L")))
+```
+
+`mutate` was able to take the data and change its type using `as.factor()`. Here we also used `factor()` and added `levels()` to the predation data. This will tell R that this data should be loaded in a specific order that being "C", then "NL", and then "L". This is less important now but will be helpful when it comes to graphing.
+
+When we view the data again using `str()`, we will see these changes.
+```{r}
+str(RxP)
+```
+
+Now lets say we only want to view the largest of the tadpoles, we could use
+`filter()` in order to do this
+```{r}
+BIG.RxP <- RxP |> 
+  filter(Mass.final > 0.3) # Will remove any tadpoles that were had a final mass < 0.3
+```
+
+If you look in your environment in the top left of your screen you should now see significantly less observations (abbreviated as obs.) meaning we have successfully filtered data.
+
+###############################################################
+CAN SOMEONE DO SOMETHING ABOUT NORMALLY DISTRIBUTED DATA HERE
+##############################################################
+
+Because we can see that our data is not normally distributed, we might want to add a column that fixes this. We will be using `mutate()` again but in a different way to do this.
+=======
+```
+##OBJECTIVE
+
+## Load in data
+First we are going to load in our data using `read_csv()` which will turn a csv file into a dataframe.This code helps load the data for exploration and analyzing. We will also `view()` this data.
+
+```{r, quiet = TRUE}
+RxP <- read_csv("RxP.csv")
+view(RxP)
+```
+
+## Manipulating data
+
+This dataset shows a lot of different variables but more often than not we may not care about all of these variables. In order to `select()` data, we will use this command.
+```{r}
+RxP <- RxP |> 
+  select(Hatch, Pred, Res, Mass.final, SVL.final) # Column names to be selected
+```
+
+When we view our RxP data set now, we will see that only the variables within `select()` are seen.
+
+Lets take a look at our data using the `str()` command which returns the structure of our data frame. 
+
+Note chr means character and num means numeric.
+```{r}
+str(RxP)
+```
+
+Data has different classes or types of values. Numeric refering to numbers, Characters words, and factors as levels. Currently our Hatch, Pred, and Res columns are considered characters but for graphing we will want to make sure they are `factors`. To do this we will use `mutate()`. 
+
+`mutate` was able to take the data and change its type using `as.factor()`. Here we also used `factor()` and added `levels()` to the predation data. This will tell R that this data should be loaded in a specific order that being "C", then "NL", and then "L". This is less important now but will be helpful when it comes to graphing.
+```{r}
+RxP <- RxP |> 
+  mutate(Hatch = as.factor(Hatch),
+         Res = as.factor(Res),
+         Pred = factor(Pred, levels = c("C", "NL", "L")))
+```
+
+When we view the data again using `str()`, we will see these changes, that is instead of just 26 variables, we see the 5 variables we are going to be using for our exploration. Also, this code this time tells you if the variable is a factor or numerical, which is very important for this data set. 
+```{r}
+str(RxP)
+```
+
+Now lets say we only want to view the largest of the tadpoles, we could use
+`filter()` in order to do this
+```{r}
+BIG.RxP <- RxP |> 
+  filter(Mass.final > 0.3) # Will remove any tadpoles that were had a final mass < 0.3
+```
+
+If you look in your environment in the top left of your screen you should now see significantly less observations (abbreviated as obs.) meaning we have successfully filtered data.
+
+Shapiro-Wilk normality test. The normality test shows that final mass is not normally distributed.
+
+Also the dollar sign is very important in the Shapiro-Wilk normality test. Always assign dollar sign to the variable you will be running a test on.
+```{r}
+shapiro.test(RxP$Mass.final)
+```
+
+These are the diagnostic plots below to check if things look okay or really out of whack. From these plots we can see that things do not look okay. The Q-Q Plot, boxplot, and histogram show a skewed data because the data may not be normally distributed. For example, the Q-Q Plot outliers at the far ends deviate from the diagonal line meaning there could be more extreme values than expected, hence, violating the model assumption.
+```{r}
+simple.eda(RxP$Mass.final)
+```
+
+Because we can see that our data is not normally distributed, we might want to add a column that fixes this. We will be using `mutate()` again but in a log transformation way to do this.
+>>>>>>> a6904641040b2be5d34cfe2b3cf9ad241d5d4670
+```{r}
+RxP <- RxP |> 
+  mutate(Log.mass = log10(Mass.final))
+```
+
+<<<<<<< HEAD
+We have now created a new Log.mass column in or RxP dataframe. When we view this data again with `simple.eda()` we will see that this data is a lot more normally distributed.
+=======
+We have now created a new Log.mass column in or RxP data frame. When we view this data with `simple.eda()` we will see that this data is a lot more normally distributed. log transformation helps the data to be more normally distributed. 
+>>>>>>> a6904641040b2be5d34cfe2b3cf9ad241d5d4670
+
+```{r}
+simple.eda(RxP$Log.mass)
+```
+<<<<<<< HEAD
+=======
+
+
+##Data Visualization
+Data visualization is where we visually graph our data and gives more clarity to readers or viewers. So for this project we are going to graph three of the most common graphs in R studio, a bar graph, box plot, and linear graph. Now lets begin graphing our data.
+
+The code below graph for bar graph. For bar graph, you have to use a factor and a numerical variable for better graph.This simply explains that hatching age is dependent on final mass.
+```{r}
+ggplot(RxP, aes(x = Hatch, y = Mass.final)) +
+  geom_bar(stat = "identity") +
+  labs(title = "Hatching age and Final Mass", x = "Hatching age", y = "Final Mass") +
+  theme_cowplot()
+```
+
+Now it is your turn
+start by calling the function ggplot. Replace the variables in the parenthesis to your data set
+```{r}
+ggplot(Data Set, aes(x = independent variable, y = dependent variable)) +
+  geom_bar(stat = "identity") +
+  labs(title = "what ever name you want to call your graph", x = "independent variable", y = "dependent variable") +
+theme_cowplot()
+```
+##yayy you are done now.
+
+
+The code below graph for box plot. For box plot, you also have to use a factor and a numerical variable for better graph. However, in this graph we compare three variable. hatching age and predation are dependent on final mass.
+```{r}
+ggplot(RxP, aes(x = Hatch, y = Mass.final)) +
+  geom_boxplot() +
+  labs(title = "Hatching age and Final Mass", x = "Hatching age", y = "Final Mass") +
+  theme_cowplot()
+```
+
+Now let's practice!
+start by calling the function ggplot.Replace the variables in the parenthesis to your data set.This time you are going to use a geom_boxplot function instead of geom_bar.
+```{r}
+ggplot(Data Set, aes(x = independent variable, y = dependent variable)) +
+  geom_boxplot(stat = "identity") +
+  labs(title = "what ever name you want to call your graph", x = "independent variable", y = "dependent variable") +
+theme_cowplot()
+```
+##How are you feeling so far? We are about to something even cooler than our two graphs.
+
+The code below graph for linear graph. For linear graph, you have to use two numerical variables for better graph. So we will use SVL.final and final mass. Linear graph helps show the relationship between variables. After our linear graph model, we then do our statistical test to explain our data.
+
+```{r}
+ggplot(RxP, aes(x = Hatch, y = Mass.final, fill = Pred)) +
+  geom_boxplot() +
+  labs(title = "Hatching age and Final Mass", x = "Hatching age", y = "Final Mass") +
+  theme_cowplot()
+```
+
+Are you excited to compare more than two variables? Okay, great. The code you are about to use compares three variables all together and gives you a beautiful colorful graph. This time we will use fill to add our third varaible. Note this is a factor and not a numerical variable
+
+```{r}
+ggplot(Data Set, aes(x = independent variable, y = dependent variable, fill = Pred)) +
+  geom_boxplot() +
+  labs(title = "what ever name you want to call your graph", x = "independent variable", y = "dependent variable") +
+theme_cowplot()
+```
+
+
+```{r linear graph}
+ggplot(RxP, aes(x = SVL.final, y = Mass.final)) +
+  geom_point(alpha = 0.3) +
+  geom_smooth(method = "lm") +
+  labs(title = "SVL.final and Final Mass", x = "SVL.final", y = "Final Mass") +
+  theme_cowplot()
+```
+
+Let's code for our last graph, which is linear graph.Call the ggplot function again and then use geom_point to construct a linear graph. However, for linear graph, you use numerical values only.alpha helps you to increase the visibility of the points along the line. You can play around that to see for yourself.
+```{r}
+ggplot(Data set, aes(x = numerical value 1, y = numerical value 2)) +
+  geom_point(alpha = 0.3) + 
+  geom_smooth(method = "lm") +
+  labs(title = "SVL.final and Final Mass", x = "SVL.final", y = "Final Mass") +
+  theme_cowplot()
+```
+##Yayyy, Now we are done with data visualization. We can finally run our statistical test.
+
+##Statistical Tests
+We will now begin our statistical test
+
+We need to test our assumptions in order to run a linear model. Because of this, I will always plot the model after we have created it so we can use the plots to ensure the assumptions are met.
+
+First we are going to run a linear model on our two numeric variables (SVL.final and `Mass.final). What this does is tell us if a change in the independent variable can predict a change in the dependent variable.
+
+We will use the `lm()` function to do this. We put the dependent variable first, then the independent. Afterwards we tell R the data to use. Finally we ask it to show us the results with the `summary()` command. We will also plot the data.
+
+```{r}
+SVLtoMassLM <- lm(Mass.final ~ SVL.final, data = RxP)
+summary(SVLtoMassLM)
+anova(SVLtoMassLM)
+plot(SVLtoMassLM)
+```
+
+
+We got a p-value of 2.2e-16, which means that there is an extremely strong positive and significant correlation between SVL.final and Mass.final. Notice how both the `lm()` function and the `anova()` function gave the same p value. This is because the data fits the assumptions for both. 
+
+You can see in the plots that this data is not perfectly normal. Remember earlier when we transformed the Mass data using the log function? Now is the time to use it. Use the `Log.mass` variable instead of `Mass.final`
+
+##Now you try
+using the code above as an example, and the scaffolding I have created, create your own linear model with the two numeric variables `Log.mass` and `SVL.Final`.
+```{r}
+testmodel1 <- lm(DEPENDENT.VARIABLE ~ IDEPENDENT.VARIABLE, data = DATA)
+summary(testmodel1)
+plot(testmodel1)
+```
+
+
+
+Now we will do a linear model on a categorical variable and a numeric one. Remember earlier when we changed the three categorical variables from characters to factors? We are now testing to see whether or not the hatching age affects the final mass of the tadpoles. We will use the exact same syntax as before, replacing the independent variable from before with the new `Hatch` variable
+
+```{r}
+HatchtoMassLM <- lm(Mass.final ~ Hatch, data = RxP)
+summary(HatchtoMassLM)
+plot(HatchtoMassLM)
+```
+
+Why do our plots look like this? Well to start, lets think about what we changed. We swapped out the numeric variable `SVL.final` for the factor `Hatch`. If you remember what happened when we did `str()`, the data for `Hatch` can only be either E or L. This is why we see two distinct lines in our plots.
+
+
+The p-value is .1232, which means that at the standard significance level of .05, these results are not significant for this relationship. Our R-squared value is also very small, which furthers that `Hatch` is not a good predictor of `Mass.final`.
+
+
+##Second attempt
+Your turn now! I have reduced the template to make it slightly more difficult. Create your own second linear model using a variable we converted to a factor and our more normal `Log.mass` numeric variable.
+```{r}
+testmodel2 <- lm( ~ , data = )
+summary()
+```
+
+
+
+Now we are going to look at a more complex linear model. What happens if we ask the question how `SVL.final` and `Hatch` predict `Mass.final` together? This following test will tell us if each variable has an effect on Mass.final individually, as well as if the effect gets stronger when controlling for the other variable.
+
+
+In order to code two variables as the independant variable, we will use a + sign. This is simple and makes sense, as R understands we want to use both `SVL.final` + `Hatch`
+```{r}
+SVLandHatchtoMassLM <- lm(Mass.final ~ SVL.final + Hatch, data = RxP)
+summary(SVLandHatchtoMassLM)
+plot(SVLandHatchtoMassLM)
+```
+
+These residuals are similar to our lm with only `SVL.final`. This suggests that this model is still somewhat accurate in terms of its ability to predict `Mass.final`. The R-squared is higher than the previously mentioned model, meaning that these two variables together are better predictors of Mass.final.
+
+In spite of all this, the plots show the assumptions are not quite met as the data is not exactly normal. You know how to fix this by now.
+
+##Your final test
+Now is your turn again! Create your own linear model based on how the two variables affect the adjusted `Log.mass` variable. No scaffolding this time. Feel free to reference your code above or the example code above if you get stuck
+```{r}
+
+```
+
+>>>>>>> a6904641040b2be5d34cfe2b3cf9ad241d5d4670
