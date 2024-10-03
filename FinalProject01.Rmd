@@ -2,7 +2,7 @@
 title: "Group Project 1"
 subtitle: "Biology 368/664 Bucknell University"
 output: pdf_document
-authors: Jesse Gunn Cheu, Deborah , Jack Strickland
+authors: Jesse Gunn Cheu, Deborah Gonkpah, Jack Strickland
 date: 14 Sep 2024
 ---
 
@@ -237,16 +237,6 @@ ggplot(RxP, aes(x = SVL.final, y = Mass.final)) +
 ```
 
 
-=======
-Lastly, you should take a look at `Tail.initial` data column using `simple.eda()` and determine if it is normally distributed. If you find that the data is not normally distributed, then you should create a new column using `mutate()` that finds the `log10()` of the data.
-```{r}
-#YOUR CODE GOES HERE
-```
-
-YIPPIE!
-
-### VISUALIZATION
-=======
 Let's code for our last graph, which is linear graph.Call the ggplot function again and then use geom_point to construct a linear graph. However, for linear graph, you use numerical values only.alpha helps you to increase the visibility of the points along the line. You can play around that to see for yourself.
 ```{r}
 ggplot(Data set, aes(x = numerical value 1, y = numerical value 2)) +
