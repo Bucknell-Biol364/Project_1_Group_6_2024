@@ -263,6 +263,7 @@ anova(SVLtoMassLM)
 plot(SVLtoMassLM)
 ```
 
+In a statistical test, there is a null hypothesis and an alternative hypothesis. For our purposes, the null hypothesis is that there is no relationship between Mass.final and SVL.final. If our p value comes out below 0.05, we will reject the null hypothesis and accept the alternative hypothesis.
 
 We got a p-value of 2.2e-16, which means that there is an extremely strong positive and significant correlation between SVL.final and Mass.final. Notice how both the `lm()` function and the `anova()` function gave the same p value. This is because the data fits the assumptions for both. 
 
