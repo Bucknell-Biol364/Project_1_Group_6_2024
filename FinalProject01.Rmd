@@ -19,7 +19,7 @@ conflict_prefer_all("dplyr", quiet = TRUE)
 
 First we are going to load in our data using `read_csv()` which will turn a csv file into a dataframe. We will also `view()` this data.
 ```{r, quiet = TRUE}
-RxP <- read_csv("RxP.csv") #loads in data as RxP
+RxP.Total <- read_csv("RxP.csv") #loads in data as RxP
 PRACTICE.RxP <- read_csv("RxP.csv") #loads in data as RxP
 view(RxP)
 ```
@@ -49,7 +49,7 @@ emergence began (defined as Day 1)
 
 This dataset shows a lot of different variables but more often than not we may not care about all of these variables. In order to `select()` data, we will use this command.
 ```{r}
-RxP <- RxP |> 
+RxP <- RxP.Total |> 
   select(Hatch, Pred, Res, Mass.final, SVL.final) # Column names to be selected
 ```
 
@@ -92,7 +92,7 @@ RxP <- RxP |>
 Something that is also important to not in this above code chunk is the list of levels. Lists are created with `c()`. This data holds multiple items which can be incredibily useful as you develop your R skills. Here is a quick example of some more advanced code.
 ```{r}
 for (column in c("Mass.final", "SVL.initial", "SVL.final", "Tail.initial")) {
-  print(simple.eda(RxP[[column]]))
+  print(simple.eda(RxP.Total[[column]]))
 }
 ```
 
