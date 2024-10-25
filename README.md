@@ -8,7 +8,7 @@ Deborah Gonkpah
 
 ## Target Audience
 
-We will target people who have a handful of experience in R
+This project is designed for students who have taken Biology 201 to 204.
 
 ## Instructions
 
