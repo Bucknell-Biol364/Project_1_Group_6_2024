@@ -1,36 +1,19 @@
 # Project_1 R Tutorial
 
 ## Authors: 
-
-Jack Strickland 
-Jesse Gunn Cheu
 Deborah Gonkpah
+Jesse Gunn Cheu
+Jack Strickland 
 
-## Target Audience
+
+
+ ## Target Audience
 
 This project is designed for students who have taken Biology 201 to 204.
 
-## Instructions
-
+## Data set we will use
 RxP file(Data set we use)
 
 ## Objectives
-View and organize data
-  How to load data
-  Important R functions
-  Manipulating dataframes
-  Changing data types
-  Normality
-visualize the data
-  Barplot
-  Single factor Boxplot
-  Two factor Boxplot
-  Line graph
-Stastical test(Anova and t test)
-  Linear models
-  T.test
-  Anova
-  Interpretation of results
+Equip students who have completed Biology 201 to 204 with the skills to perform foundational data analysis and visualization using R Studio. By the end of this project, students will be able to load, view, and organize biological data, apply essential R functions, manipulate dataframes, and change data types as needed. They will understand and check data normality, create visualizations such as bar plots, single- and two-factor box plots, and line graphs, and perform statistical analyses, including t-tests, ANOVA, and linear modeling. Additionally, students will develop the ability to interpret statistical results, strengthening their competence in analyzing and presenting biological research data.
 
-
-You will need to edit this README.md document when your tutorial is complete to include instructions for using the tutorial.
