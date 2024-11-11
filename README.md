@@ -12,8 +12,6 @@ Jack Strickland
 This project is designed for students who have taken Biology 201 to 204.
 
 ## Instruction
-git clone this repository
-
 In RStudio, open up instructions/instructions.rmd
 
 Follow the instructions within the tutorial.
